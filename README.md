@@ -8,33 +8,28 @@
 
 This repository accompanies our research paper titled "[Generative Agents: Interactive Simulacra of Human Behavior](https://arxiv.org/abs/2304.03442)." It contains our core simulation module for  generative agents—computational agents that simulate believable human behaviors—and their game environment. Below, we document the steps for setting up the simulation environment on your local machine and for replaying the simulation as a demo animation.
 
-## <img src="https://joonsungpark.s3.amazonaws.com:443/static/assets/characters/profile/Isabella_Rodriguez.png" alt="Generative Isabella">   Setting Up the Environment 
-To set up your environment, you will need to generate a `utils.py` file that contains your OpenAI API key and download the necessary packages.
+## <img src="https://joonsungpark.s3.amazonaws.com:443/static/assets/characters/profile/Isabella_Rodriguez.png" alt="Generative Isabella">   Setting Up the Environment
 
-### Step 1. Generate Utils File
-In the `reverie/backend_server` folder (where `reverie.py` is located), create a new file titled `utils.py` and copy and paste the content below into the file:
+> **This fork replaces OpenAI with [Ollama](https://ollama.com/) so the simulation runs fully locally.** No API key or internet connection is required for the LLM. The model used is `gemma3:4b`.
+
+### Step 1. Install and Start Ollama
+Download Ollama from [https://ollama.com](https://ollama.com) and pull the required models:
+
+```bash
+ollama pull gemma3:4b
+ollama pull nomic-embed-text   # needed for memory embeddings
 ```
-# Copy and paste your OpenAI API Key
-openai_api_key = "<Your OpenAI API>"
-# Put your name
-key_owner = "<Name>"
 
-maze_assets_loc = "../../environment/frontend_server/static_dirs/assets"
-env_matrix = f"{maze_assets_loc}/the_ville/matrix"
-env_visuals = f"{maze_assets_loc}/the_ville/visuals"
+Make sure Ollama is running before starting the simulation (`ollama serve`, or it starts automatically on macOS after installation).
 
-fs_storage = "../../environment/frontend_server/storage"
-fs_temp_storage = "../../environment/frontend_server/temp_storage"
-
-collision_block_id = "32125"
-
-# Verbose 
-debug = True
-```
-Replace `<Your OpenAI API>` with your OpenAI API key, and `<name>` with your name.
- 
 ### Step 2. Install requirements.txt
-Install everything listed in the `requirements.txt` file (I strongly recommend first setting up a virtualenv as usual). A note on Python version: we tested our environment on Python 3.9.12. 
+Install everything listed in the `requirements.txt` file (I strongly recommend first setting up a virtualenv as usual). A note on Python version: we tested our environment on Python 3.9.12.
+
+```bash
+pip install -r requirements.txt
+```
+
+The `utils.py` file is already included in this fork (`reverie/backend_server/utils.py`) and requires no changes — no API key is needed.
 
 ## <img src="https://joonsungpark.s3.amazonaws.com:443/static/assets/characters/profile/Klaus_Mueller.png" alt="Generative Klaus">   Running a Simulation 
 To run a new simulation, you will need to concurrently start two servers: the environment server and the agent simulation server.
@@ -82,7 +77,7 @@ To start the demo, go to the following address on your browser: `http://localhos
 [http://localhost:8000/demo/July1_the_ville_isabella_maria_klaus-step-3-20/1/3/](http://localhost:8000/demo/July1_the_ville_isabella_maria_klaus-step-3-20/1/3/)
 
 ### Tips
-We've noticed that OpenAI's API can hang when it reaches the hourly rate limit. When this happens, you may need to restart your simulation. For now, we recommend saving your simulation often as you progress to ensure that you lose as little of the simulation as possible when you do need to stop and rerun it. Running these simulations, at least as of early 2023, could be somewhat costly, especially when there are many agents in the environment.
+Since this fork uses Ollama locally, there are no API rate limits or costs. However, `gemma3:4b` is a smaller model than the original GPT-3.5/GPT-4 used in the paper, so response quality and JSON formatting reliability may vary. If the simulation stalls due to repeated failed generations (fail-safe triggers), try restarting the simulation server. We still recommend saving your simulation often as you progress.
 
 ## <img src="https://joonsungpark.s3.amazonaws.com:443/static/assets/characters/profile/Maria_Lopez.png" alt="Generative Maria">   Simulation Storage Location
 All simulations that you save will be located in `environment/frontend_server/storage`, and all compressed demos will be located in `environment/frontend_server/compressed_storage`. 
